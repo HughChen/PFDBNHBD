@@ -1,0 +1,22 @@
+Beat-by-beat comparison results for record /Users/hughchen/Code/physionet/data/training_2014/163
+Reference annotator: atr
+     Test annotator: wabp
+
+               Algorithm
+        n    s    v    f    q    o    x
+   ____________________________________
+ N |  843    0    0    0    0   41    0
+ S |    0    0    0    0    0    0    0
+ V |    0    0    0    0    0    0    0
+ F |    0    0    0    0    0    0    0
+ Q |    0    0    0    0    0    0    0
+ O |   41    0    0    0    0
+ X |    0    0    0    0    0
+
+           QRS sensitivity:  95.36% (843/884)
+ QRS positive predictivity:  95.36% (843/884)
+           VEB sensitivity:      -  (0/0)
+ VEB positive predictivity:      -  (0/0)
+          SVEB sensitivity:      -  (0/0)
+SVEB positive predictivity:      -  (0/0)
+     RMS RR interval error:  14.50 ms
