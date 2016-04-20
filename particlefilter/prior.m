@@ -1,8 +1,6 @@
 function x = prior(N,window,averageHR)
 % prior for heart beat annotation model
-% % % x = zeros(9,N);
 x = zeros(9,N);
-% RestingHR = min(max(40,averageHR+10*randn(1,N)),150);
 RestingHR = min(max(40,averageHR+10*randn(1,N)),100);
 TrueHR = RestingHR + 5*randn(1,N);
 ECGart = rand(1,N)>0.99; % no artifact wp 0.99

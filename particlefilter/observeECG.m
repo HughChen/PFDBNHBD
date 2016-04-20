@@ -18,22 +18,10 @@ w1 = (ActualBeat==0).*(ECGart==0).*(GQRS==0).*(1-beat_prob) + ...
 (ActualBeat==1).*(ECGart==1).*(GQRS==1)*0.7;
 
 w2 = normpdf(GQRS_HR,TrueHR,1/4*abs(TrueHR));
-% w2 = w2/max(w2);
 
 if isnan(GQRS_HR)
     w = w1;
 else
     w = w1.*w2;
 end
-
-% w = w1;
-
-% w = (ActualBeat==0).*(ECGart==0).*(GQRS==0).* 0.999+ ...
-% (ActualBeat==0).*(ECGart==0).*(GQRS==1).* 0.001 + ...
-% (ActualBeat==0).*(ECGart==1).*(GQRS==0).* 0.8 + ...
-% (ActualBeat==0).*(ECGart==1).*(GQRS==1).* 0.2 + ...   % spurious detection
-% (ActualBeat==1).*(ECGart==0).*(GQRS==0)*0.01 + ...
-% (ActualBeat==1).*(ECGart==0).*(GQRS==1)*0.99 + ...
-% (ActualBeat==1).*(ECGart==1).*(GQRS==0)*0.2 + ...   % missing detection
-% (ActualBeat==1).*(ECGart==1).*(GQRS==1)*0.8;
 

@@ -1,5 +1,5 @@
-function y = probs(x,t,window)
-% propagete according to the system dynamics
+function y = propagation(x,t,window)
+% Propagate according to the system dynamics
 N = size(x,2);
 TrueHR_old = x(1,:);
 ECGart_old = x(2,:);
@@ -14,7 +14,6 @@ LastPeakABP_old = x(9,:);
 Delay = ones(1,numel(Latency)).*round(mean(Latency));
 ABPpeak_new = (t == (LastPeak_old + Delay) );
 TrueHR_new = 0.8*TrueHR_old + 0.2*RestingHR + 15*randn(1,N);
-% TrueHR_new = 0.2*TrueHR_old + 0.2*RestingHR + .6*LastHR_new + 3*randn(1,N);
 ECGart_new = (ECGart_old==0).*(rand(1,N)>0.99) + (ECGart_old==1).*(rand(1,N)<0.99);
 probability = prob_function(t-LastPeak_old,TrueHR_new,window);
 ActualPeak_new = rand(1,N)< probability;
