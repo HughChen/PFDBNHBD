@@ -3,7 +3,7 @@ restoredefaultpath
 curr_path = pwd;
 split_path = strsplit(curr_path, '/particlefilter');
 path_prefix = split_path{1};
-addpath(strcat(path_prefix, '/data'), '../wfdb-app-toolbox-0-9-9/mcode');
+addpath(strcat(path_prefix, '/helpers'), '../wfdb-app-toolbox-0-9-9/mcode');
 addpath(strcat(path_prefix, '/alistairewj_sqi/sources'));
 
 savepath
