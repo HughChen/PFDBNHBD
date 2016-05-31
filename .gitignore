@@ -1,1 +1,10 @@
+# No DS_Store files
 .DS_Store
+
+# No report or generated annotation files
+/data/setp1/*.txt
+/data/setp1/*.qrs
+/data/setp1/*.wabp
+/data/setp2/*.txt
+/data/setp2/*.qrs
+/data/setp2/*.wabp
