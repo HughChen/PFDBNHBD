@@ -11,7 +11,7 @@ file_num = '2602';
 record_name = strcat(path_prefix, '/data/setp2/', file_num);
 
 % Initialize
-% Index 1 -> ecg, index 2 -> abp, 3 -> ecg_backup, 4 -> abp_backup
+% Index 1 -> ecg, index 2 -> abp
 tic
 indices = [0,0];
 [num, freq] = get_N_and_freq(record_name);
@@ -35,6 +35,7 @@ if numel(ecg_leads) > 0
         GQRS = [];
         gqrs_hr = [];
         ecg_sqi = [];
+        fprintf('Error with gqrs\n');
     end    
 else
     GQRS = [];
@@ -61,7 +62,9 @@ if numel(abp_leads) > 0
                 abp_sqi(i) = 0;
             end
         end
-        if numel(ecg_leads) == 0
+        if numel(ecg_leads) == 0 || exist('average_hr', 'var') ~= 1
+            % Uses the average_hr from WABP if there's no available ECG
+            % information
             average_hr = nanmean(wabp_hr);
             T = length(WABP);
         end
@@ -70,6 +73,7 @@ if numel(abp_leads) > 0
         WABP = [];
         wabp_hr = [];
         abp_sqi = [];
+        fprintf('Error with wabp\n');
     end    
 else
     WABP = [];
@@ -138,12 +142,17 @@ abp_heart_beats = temp_heart_beats;
 latency = states(8,:);
 last_latency = latency(end);
 max_size = sig_info.LengthSamples;
-if (gqrs_ann(end)+last_latency*freq*window > max_size)
-    abp_heart_beats = [abp_heart_beats ; gqrs_ann(end)];
+if exist('gqrs_ann', 'var') == 1
+    if (gqrs_ann(end)+last_latency*freq*window > max_size)
+        abp_heart_beats = [abp_heart_beats ; gqrs_ann(end)];
+    end
 end
 % Generates the pf annotation file and check it against the actual.
 start_time = wfdbtime(record_name, 1);
 
+% Reads reference annotations. Other datasets might have different
+% extensions. Make sure to change the extension for rdann and bxb if
+% necessary
 [ref_ann] = rdann(record_name, 'atr');
 report_file = [record_name 'report.txt'];
 
@@ -162,7 +171,7 @@ QFP = sum(sum(data(6:7,1:5)));
 PF_ABP_sens = QTP/(QTP + QFN);
 PF_ABP_pos_pred = QTP/(QTP + QFP);
 
-if numel(ecg_leads) > 0
+if numel(ecg_leads) > 0 && exist('gqrs_ann', 'var') == 1
     % Generates the gqrs annotation file and check it against the actual.
     gqrs(record_name);
     if exist(report_file, 'file') == 2
