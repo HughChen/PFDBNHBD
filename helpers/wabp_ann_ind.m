@@ -1,7 +1,7 @@
 function [beat_ann_time, beat_ann_arr] = wabp_ann_ind(record_name, window_size, signal_index)
 %% Finds beat annotations for ABP waveforms using the wabp function.
 %
-% Returns two arrays, one corresponding ot the time of each measurement and
+% Returns two arrays, one corresponding to the time of each measurement and
 % the other corresponding ot the number of annotations in a specific
 % window.
 %

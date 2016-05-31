@@ -23,7 +23,7 @@ function [ sqi ] = bSQI( record_name, window_size, window_offset, lead )
 % sqi
 %       Signal quality index calculated for each beat in a window range.
 %       Number matched divided by total number of beats (gqrs number +
-%       wqrs number - number matched).
+%       sqrs number - number matched).
 sig_info = wfdbdesc(record_name);
 [N, freq] = get_N_and_freq(record_name);
 start_index = 1;
@@ -31,9 +31,6 @@ samples_num = sig_info(lead).LengthSamples;
 
 gqrs(record_name,N,start_index,lead);
 [gqrs_ann,~,~,~,~,~] = rdann(record_name,'qrs',[]);
-
-% [~, signal] = rdsamp(record_name);
-% jqrs_ann = (jqrs_mod(signal(:,lead),0.250,0.6,freq,[],0))';
 
 sqrs(record_name,N,start_index,lead);
 [sqrs_ann,~,~,~,~,~] = rdann(record_name,'qrs',[]);

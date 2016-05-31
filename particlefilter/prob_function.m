@@ -1,4 +1,6 @@
 function y = prob_function(difference, TrueHR,window)
+% Utilizes a repeated binomial distribution to determine the 
+% probability of the next beat.
 
 beat_window = 60./(window*TrueHR);
 k = mod(difference,floor(beat_window));

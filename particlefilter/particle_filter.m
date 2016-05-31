@@ -1,4 +1,7 @@
 clc; clear all; close all;
+% Loads signals and relevant observations. Runs a particle filter to
+% perform inference on where heart beats occurred. Annotates heart
+% beats, and compares them to the reference annotations.
 restoredefaultpath
 curr_path = pwd;
 split_path = strsplit(curr_path, '/particlefilter');

@@ -1,4 +1,6 @@
 function w = observeECG(GQRS,GQRS_HR,x,t,window)
+% Calculates weight for particle based on given heart rate, GQRS
+% annotation observations, time, and the state of the particle 
 TrueHR = x(1,:);
 ECGart = x(2,:);
 ActualBeat = x(3,:);
