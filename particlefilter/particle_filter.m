@@ -13,7 +13,7 @@ record_name = strcat(path_prefix, '/data/setp2/', file_num);
 % Initialize
 % Index 1 -> ecg, index 2 -> abp, 3 -> ecg_backup, 4 -> abp_backup
 tic
-indices = [0,0,0,0];
+indices = [0,0];
 [num, freq] = get_N_and_freq(record_name);
 sig_info = wfdbdesc(record_name);
 window = 0.025;
@@ -42,28 +42,6 @@ else
     ecg_sqi = [];
 end
 
-if numel(ecg_leads) == 2
-    try
-        indices(3) = 1;
-        [~,GQRS_backup] = ecg_ann_ind(record_name,window,ecg_leads(2));
-        gqrs(record_name, [], [], ecg_leads(2));
-        [gqrs_ann_backup] = rdann(record_name, 'qrs');
-        [~, gqrs_hr_backup] = calc_hr(record_name, gqrs_ann_backup, 5, window);
-        [ecg_sqi_backup] = bSQI(record_name,10,window,ecg_leads(2));
-        if (sum(ecg_sqi) < sum(ecg_sqi_backup))
-            average_hr = nanmean(gqrs_hr_backup);
-        end
-    catch E
-        indices(3) = 0;
-        GQRS_backup = [];
-        gqrs_hr_backup = [];
-        ecg_sqi_backup = [];
-    end
-else
-    GQRS_backup = [];
-    gqrs_hr_backup = [];
-    ecg_sqi_backup = [];
-end
 T = length(GQRS);
 
 abp_leads = get_abp_lead_indices(sig_info);
@@ -99,25 +77,6 @@ else
     abp_sqi = [];
 end    
 
-if numel(abp_leads) == 2
-    try
-        indices(4) = 1;
-        [~,WABP_backup] = wabp_ann_ind(record_name,window,abp_leads(2));
-        wabp(record_name,[],[],[],abp_leads(2));
-        [wabp_ann_backup] = rdann(record_name, 'wabp');
-        [~, wabp_hr_backup] = calc_hr(record_name, wabp_ann_backup, 5, window);
-        [abp_sqi_backup] = aSQI(record_name, window,abp_leads(2));
-    catch E
-        indices(2) = 0;
-        WABP_backup = [];
-        wabp_hr_backup = [];
-        abp_sqi_backup = [];
-    end
-else
-    WABP_backup = [];
-    wabp_hr_backup = [];
-    abp_sqi_backup = [];
-end
 % Particle Filter
 t=1;
 N = 2000;
@@ -168,13 +127,14 @@ end
 actual_heart_beats = transpose(actual_heart_beats);
 abp_heart_beats = transpose(abp_heart_beats);
 temp_heart_beats = abp_heart_beats;
+% Removes any negative time values for heart beats
 for j=1:numel(abp_heart_beats)
     if abp_heart_beats(j) < 0
         temp_heart_beats = temp_heart_beats(2:end);
     end
 end
 abp_heart_beats = temp_heart_beats;
-% Slight post processing
+% Slight post processing to add last beat if WABP failed to annotate it
 latency = states(8,:);
 last_latency = latency(end);
 max_size = sig_info.LengthSamples;
