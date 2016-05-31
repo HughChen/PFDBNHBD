@@ -38,3 +38,9 @@ for f in *.hea; do
 		fi
 	done
 done
+
+# Removes all ends of the record
+rm -r *E.*
+# Moves all the snipped records into a new directory
+mkdir snippedrecords
+mv -v *A*.* snippedrecords

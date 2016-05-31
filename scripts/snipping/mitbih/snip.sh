@@ -25,11 +25,6 @@ for f in *.hea; do
 		    if [ $end -ge $recordtime ];
 		    then
 		    	echo "Last snip, end time is $end, record time is $recordtime"
-		    	if [ $end -ne $recordtime ];
-		    	then
-		    		newrecord+="E"
-		    		# Makes sure records at the end with a little bit left are distinguished
-		    	fi
 			fi
 
 		    echo snip -i $record -n $newrecord -f $start -t $end -a ecg
@@ -37,3 +32,9 @@ for f in *.hea; do
 		fi
 	done
 done
+
+# Note: (there are 2 files that aren't multiple of 10 minutes long, but we decided to keep them
+# as part of the snipped records)
+# Moves all the snipped records into a new directory
+mkdir snippedrecords
+mv -v *A*.* snippedrecords
