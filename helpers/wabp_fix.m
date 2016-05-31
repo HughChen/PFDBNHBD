@@ -1,6 +1,9 @@
 function [ new_wabp_ann ] = wabp_fix( wabp_ann, abp_lead, signal )
-%WABP_FIX Summary of this function goes here
-%   Detailed explanation goes here
+%WABP_FIX Attempts to remove double annotations from wabp
+%
+% Detects oscillations in detected beats in terms of
+% amplitude and then rejected thebeats based on the criteria
+% that they belonged to the higher amplitude set.
 
 w_half = 5;
 new_wabp_ann = [];

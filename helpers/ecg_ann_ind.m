@@ -1,8 +1,8 @@
 function [beat_ann_time, beat_ann_arr] = ecg_ann_ind(record_name, window_size, signal_index)
-%% Finds beat annotations for ECG waveforms using the sqrs function.
+%% Finds beat annotations for ECG waveforms using the gqrs function.
 %
 % Returns two arrays, one corresponding ot the time of each measurement and
-% the other corresponding ot the number of annotations in a specific
+% the other corresponding to the number of annotations in a specific
 % window.
 %
 % Required Parameters:

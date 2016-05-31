@@ -1,6 +1,6 @@
 function w = observe( GQRS,WABP,GQRS_HR,WABP_HR,ecg_sqi,abp_sqi,x,t,window,indices )
-%OBSERVE Summary of this function goes here
-%   Detailed explanation goes here
+%OBSERVE Calculates weight for particles based on observations
+% and particle state
 
 if indices(1) && ecg_sqi(t) >= .8
     if indices(2) && abp_sqi(t) == 1 && ~isnan(WABP_HR(t)) && ...
