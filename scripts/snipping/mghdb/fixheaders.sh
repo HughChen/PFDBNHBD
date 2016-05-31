@@ -1,3 +1,4 @@
+#!/bin/bash
 for f in *.hea; do
 	echo "Processing $f file.."
 	truncated="$(tr '\n' ' ' < $f | cut -d' ' -f 1-4)"
