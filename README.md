@@ -1,5 +1,5 @@
 # PFDBNHBD
-
+This package implements the methods discussed in [1].
 ## Running the Particle Filter
 
 1. Clone the repo.
@@ -15,6 +15,9 @@
 * We utilized some of the SQI functions from Alistair Johnson's entry.  The original source can be found <a href="http://physionet.org/challenge/2014/sources/">here</a>.  Their paper detailing their work can be found <a href="http://iopscience.iop.org/article/10.1088/0967-3334/36/8/1665">here</a>.
 * We'll be updating the functions/scripts over time to improve documentation.
 * We've provided the utility script that we used to generate our graphs.
+
+## Reference
+[1] Hugh Chen, Yusuf B. Erol, Eric Shen, Stuart Russell, _Probabilistic Model-Based Approach for Heart Beat Detection_, to appear in Physiological Measurement
 
 ## Questions/Contact
 
