@@ -1,19 +1,22 @@
 clc; clear all; close all;
+% Loads signals and relevant observations. Runs a particle filter to
+% perform inference on where heart beats occurred. Annotates heart
+% beats, and compares them to the reference annotations.
 restoredefaultpath
 curr_path = pwd;
 split_path = strsplit(curr_path, '/particlefilter');
 path_prefix = split_path{1};
-addpath(strcat(path_prefix, '/data'), '../wfdb-app-toolbox-0-9-9/mcode');
-addpath(strcat(path_prefix, '/alistairewj-425/sources'));
+addpath(strcat(path_prefix, '/helpers'), '../wfdb-app-toolbox-0-9-9/mcode');
+addpath(strcat(path_prefix, '/alistairewj_sqi/sources'));
 
 savepath
 file_num = '2602';
 record_name = strcat(path_prefix, '/data/setp2/', file_num);
 
 % Initialize
-% Index 1 -> ecg, index 2 -> abp, 3 -> ecg_backup, 4 -> abp_backup
+% Index 1 -> ecg, index 2 -> abp
 tic
-indices = [0,0,0,0];
+indices = [0,0];
 [num, freq] = get_N_and_freq(record_name);
 sig_info = wfdbdesc(record_name);
 window = 0.025;
@@ -35,6 +38,7 @@ if numel(ecg_leads) > 0
         GQRS = [];
         gqrs_hr = [];
         ecg_sqi = [];
+        fprintf('Error with gqrs\n');
     end    
 else
     GQRS = [];
@@ -42,28 +46,6 @@ else
     ecg_sqi = [];
 end
 
-if numel(ecg_leads) == 2
-    try
-        indices(3) = 1;
-        [~,GQRS_backup] = ecg_ann_ind(record_name,window,ecg_leads(2));
-        gqrs(record_name, [], [], ecg_leads(2));
-        [gqrs_ann_backup] = rdann(record_name, 'qrs');
-        [~, gqrs_hr_backup] = calc_hr(record_name, gqrs_ann_backup, 5, window);
-        [ecg_sqi_backup] = bSQI(record_name,10,window,ecg_leads(2));
-        if (sum(ecg_sqi) < sum(ecg_sqi_backup))
-            average_hr = nanmean(gqrs_hr_backup);
-        end
-    catch E
-        indices(3) = 0;
-        GQRS_backup = [];
-        gqrs_hr_backup = [];
-        ecg_sqi_backup = [];
-    end
-else
-    GQRS_backup = [];
-    gqrs_hr_backup = [];
-    ecg_sqi_backup = [];
-end
 T = length(GQRS);
 
 abp_leads = get_abp_lead_indices(sig_info);
@@ -83,7 +65,9 @@ if numel(abp_leads) > 0
                 abp_sqi(i) = 0;
             end
         end
-        if numel(ecg_leads) == 0
+        if numel(ecg_leads) == 0 || exist('average_hr', 'var') ~= 1
+            % Uses the average_hr from WABP if there's no available ECG
+            % information
             average_hr = nanmean(wabp_hr);
             T = length(WABP);
         end
@@ -92,6 +76,7 @@ if numel(abp_leads) > 0
         WABP = [];
         wabp_hr = [];
         abp_sqi = [];
+        fprintf('Error with wabp\n');
     end    
 else
     WABP = [];
@@ -99,25 +84,6 @@ else
     abp_sqi = [];
 end    
 
-if numel(abp_leads) == 2
-    try
-        indices(4) = 1;
-        [~,WABP_backup] = wabp_ann_ind(record_name,window,abp_leads(2));
-        wabp(record_name,[],[],[],abp_leads(2));
-        [wabp_ann_backup] = rdann(record_name, 'wabp');
-        [~, wabp_hr_backup] = calc_hr(record_name, wabp_ann_backup, 5, window);
-        [abp_sqi_backup] = aSQI(record_name, window,abp_leads(2));
-    catch E
-        indices(2) = 0;
-        WABP_backup = [];
-        wabp_hr_backup = [];
-        abp_sqi_backup = [];
-    end
-else
-    WABP_backup = [];
-    wabp_hr_backup = [];
-    abp_sqi_backup = [];
-end
 % Particle Filter
 t=1;
 N = 2000;
@@ -168,22 +134,28 @@ end
 actual_heart_beats = transpose(actual_heart_beats);
 abp_heart_beats = transpose(abp_heart_beats);
 temp_heart_beats = abp_heart_beats;
+% Removes any negative time values for heart beats
 for j=1:numel(abp_heart_beats)
     if abp_heart_beats(j) < 0
         temp_heart_beats = temp_heart_beats(2:end);
     end
 end
 abp_heart_beats = temp_heart_beats;
-% Slight post processing
+% Slight post processing to add last beat if WABP failed to annotate it
 latency = states(8,:);
 last_latency = latency(end);
 max_size = sig_info.LengthSamples;
-if (gqrs_ann(end)+last_latency*freq*window > max_size)
-    abp_heart_beats = [abp_heart_beats ; gqrs_ann(end)];
+if exist('gqrs_ann', 'var') == 1
+    if (gqrs_ann(end)+last_latency*freq*window > max_size)
+        abp_heart_beats = [abp_heart_beats ; gqrs_ann(end)];
+    end
 end
 % Generates the pf annotation file and check it against the actual.
 start_time = wfdbtime(record_name, 1);
 
+% Reads reference annotations. Other datasets might have different
+% extensions. Make sure to change the extension for rdann and bxb if
+% necessary
 [ref_ann] = rdann(record_name, 'atr');
 report_file = [record_name 'report.txt'];
 
@@ -202,7 +174,7 @@ QFP = sum(sum(data(6:7,1:5)));
 PF_ABP_sens = QTP/(QTP + QFN);
 PF_ABP_pos_pred = QTP/(QTP + QFP);
 
-if numel(ecg_leads) > 0
+if numel(ecg_leads) > 0 && exist('gqrs_ann', 'var') == 1
     % Generates the gqrs annotation file and check it against the actual.
     gqrs(record_name);
     if exist(report_file, 'file') == 2

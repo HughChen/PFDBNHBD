@@ -1,4 +1,6 @@
 function w = observeABP(WABP,WABP_HR,x,t,window)
+% Calculates weight for particle based on given heart rate, WABP
+% annotation observations, time, and the state of the particle 
 TrueHR = x(1,:);
 LastPeakABP = x(9,:);
 ABPpeak = x(6,:);
