@@ -16,6 +16,13 @@
 * We'll be updating the functions/scripts over time to improve documentation.
 * We've provided the utility script that we used to generate our graphs.
 
+## Paper
+
+**Probabilistic model-based approach for heart beat detection**
+Hugh Chen, Yusuf Erol, Eric Shen and Stuart Russell
+Published August 2nd 2016 in Physiological Measurement, Volume 37, Number 9
+<a href="http://iopscience.iop.org/article/10.1088/0967-3334/37/9/1404">PDF</a>
+
 ## Questions/Contact
 
 If you have any questions, feel free to send an email to hugh.chen1{at}gmail.com and ericshen{at}berkeley.edu.
