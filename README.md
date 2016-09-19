@@ -1,5 +1,5 @@
 # PFDBNHBD
-
+This package implements the methods discussed in [1].
 ## Running the Particle Filter
 
 1. Clone the repo.
@@ -16,12 +16,8 @@
 * We'll be updating the functions/scripts over time to improve documentation.
 * We've provided the utility script that we used to generate our graphs.
 
-## Paper
-
-**Probabilistic model-based approach for heart beat detection**
-Hugh Chen, Yusuf Erol, Eric Shen and Stuart Russell
-Published August 2nd 2016 in Physiological Measurement, Volume 37, Number 9
-<a href="http://iopscience.iop.org/article/10.1088/0967-3334/37/9/1404">PDF</a>
+## Reference
+[1] Hugh Chen, Yusuf B. Erol, Eric Shen, Stuart Russell, "Probabilistic Model-Based Approach for Heart Beat Detection", _Physiological Measurement_, Vol. 37, No. 9, August 2016, <a href="http://iopscience.iop.org/article/10.1088/0967-3334/37/9/1404">link</a>.
 
 ## Questions/Contact
 
